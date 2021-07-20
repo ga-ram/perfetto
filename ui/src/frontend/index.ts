@@ -27,20 +27,11 @@ import {
 } from '../controller/chrome_proxy_record_controller';
 import {initController} from '../controller/index';
 
-import {AnalyzePage} from './analyze_page';
 import {initCssConstants} from './css_constants';
 import {maybeShowErrorDialog} from './error_dialog';
-import {installFileDropHandler} from './file_drop_handler';
-import {FlagsPage} from './flags_page';
 import {globals} from './globals';
 import {HomePage} from './home_page';
-import {initLiveReloadIfLocalhost} from './live_reload';
-import {MetricsPage} from './metrics_page';
-import {postMessageHandler} from './post_message_handler';
-import {RecordPage, updateAvailableAdbDevices} from './record_page';
 import {Router} from './router';
-import {CheckHttpRpcConnection} from './rpc_http_dialog';
-import {TraceInfoPage} from './trace_info_page';
 import {maybeOpenTraceFromRoute} from './trace_url_handler';
 import {ViewerPage} from './viewer_page';
 
@@ -123,55 +114,7 @@ function setExtensionAvailability(available: boolean) {
   }));
 }
 
-function setupContentSecurityPolicy() {
-  // Note: self and sha-xxx must be quoted, urls data: and blob: must not.
-  const policy = {
-    'default-src': [
-      `'self'`,
-      // Google Tag Manager bootstrap.
-      `'sha256-LirUKeorCU4uRNtNzr8tlB11uy8rzrdmqHCX38JSwHY='`,
-    ],
-    'script-src': [
-      `'self'`,
-      // TODO(b/201596551): this is required for Wasm after crrev.com/c/3179051
-      // and should be replaced with 'wasm-unsafe-eval'.
-      `'unsafe-eval'`,
-      'https://*.google.com',
-      'https://*.googleusercontent.com',
-      'https://www.googletagmanager.com',
-      'https://www.google-analytics.com',
-    ],
-    'object-src': ['none'],
-    'connect-src': [
-      `'self'`,
-      'http://127.0.0.1:9001',  // For trace_processor_shell --httpd.
-      'https://www.google-analytics.com',
-      'https://*.googleapis.com',  // For Google Cloud Storage fetches.
-      'blob:',
-      'data:',
-    ],
-    'img-src': [
-      `'self'`,
-      'data:',
-      'blob:',
-      'https://www.google-analytics.com',
-      'https://www.googletagmanager.com',
-    ],
-    'navigate-to': ['https://*.perfetto.dev', 'self'],
-  };
-  const meta = document.createElement('meta');
-  meta.httpEquiv = 'Content-Security-Policy';
-  let policyStr = '';
-  for (const [key, list] of Object.entries(policy)) {
-    policyStr += `${key} ${list.join(' ')}; `;
-  }
-  meta.content = policyStr;
-  document.head.appendChild(meta);
-}
-
 function main() {
-  setupContentSecurityPolicy();
-
   // Load the css. The load is asynchronous and the CSS is not ready by the time
   // appenChild returns.
   const cssLoadPromise = defer<void>();
@@ -180,20 +123,7 @@ function main() {
   css.href = globals.root + 'perfetto.css';
   css.onload = () => cssLoadPromise.resolve();
   css.onerror = (err) => cssLoadPromise.reject(err);
-  const favicon = document.head.querySelector('#favicon') as HTMLLinkElement;
-  if (favicon) favicon.href = globals.root + 'assets/favicon.png';
-
-  // Load the script to detect if this is a Googler (see comments on globals.ts)
-  // and initialize GA after that (or after a timeout if something goes wrong).
-  const script = document.createElement('script');
-  script.src =
-      'https://storage.cloud.google.com/perfetto-ui-internal/is_internal_user.js';
-  script.async = true;
-  script.onerror = () => globals.logging.initialize();
-  script.onload = () => globals.logging.initialize();
-  setTimeout(() => globals.logging.initialize(), 5000);
-
-  document.head.append(script, css);
+  document.head.append(css);
 
   // Add Error handlers for JS error and for uncaught exceptions in promises.
   setErrorHandler((err: string) => maybeShowErrorDialog(err));
@@ -225,11 +155,6 @@ function main() {
   const router = new Router({
     '/': HomePage,
     '/viewer': ViewerPage,
-    '/record': RecordPage,
-    '/query': AnalyzePage,
-    '/flags': FlagsPage,
-    '/metrics': MetricsPage,
-    '/info': TraceInfoPage,
   });
   router.onRouteChanged = (route) => {
     globals.rafScheduler.scheduleFullRedraw();
@@ -281,46 +206,23 @@ function main() {
     if (e.ctrlKey) e.preventDefault();
   }, {passive: false});
 
-  cssLoadPromise.then(() => onCssLoaded());
+  const url = document.getElementById('timeline_data_source')!.innerHTML;
+  cssLoadPromise.then(() => onCssLoaded(url));
+  globals.state.route="/viewer";
 
-  if (globals.testing) {
-    document.body.classList.add('testing');
-  }
 }
 
 
-function onCssLoaded() {
+function onCssLoaded(url: string) {
   initCssConstants();
-  // Clear all the contents of the initial page (e.g. the <pre> error message)
-  // And replace it with the root <main> element which will be used by mithril.
-  document.body.innerHTML = '<main></main>';
-  const main = assertExists(document.body.querySelector('main'));
+  const main = assertExists(document.getElementById('timeline_main'));
+  m.render(main, m(ViewerPage));
+
   globals.rafScheduler.domRedraw = () => {
-    m.render(main, globals.router.resolve());
+    m.render(main, m(ViewerPage));
   };
-
-  // Add support for opening traces from postMessage().
-  window.addEventListener('message', postMessageHandler, {passive: true});
-
-  // Will update the chip on the sidebar footer that notifies that the RPC is
-  // connected. Has no effect on the controller (which will repeat this check
-  // before creating a new engine).
-  CheckHttpRpcConnection();
-  initLiveReloadIfLocalhost();
-
-  updateAvailableAdbDevices();
-  try {
-    navigator.usb.addEventListener(
-        'connect', () => updateAvailableAdbDevices());
-    navigator.usb.addEventListener(
-        'disconnect', () => updateAvailableAdbDevices());
-  } catch (e) {
-    console.error('WebUSB API not supported');
-  }
-  installFileDropHandler();
-
-  // Handles the initial ?trace_id=a0b1c2 or ?s=permalink or ?url=... cases.
-  maybeOpenTraceFromRoute(Router.parseUrl(window.location.href));
+  globals.logging.logEvent('Trace Actions', 'Open example trace');
+  globals.dispatch(Actions.openTraceFromUrl({ url }));
 }
 
 main();

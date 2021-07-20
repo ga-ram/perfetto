@@ -35,7 +35,7 @@ import {
  * If the panel container scrolls, the backing canvas height is
  * SCROLLING_CANVAS_OVERDRAW_FACTOR * parent container height.
  */
-const SCROLLING_CANVAS_OVERDRAW_FACTOR = 1.2;
+const SCROLLING_CANVAS_OVERDRAW_FACTOR = 1;
 
 // We need any here so we can accept vnodes with arbitrary attrs.
 // tslint:disable-next-line:no-any

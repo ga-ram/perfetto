@@ -19,7 +19,6 @@ import {Actions} from '../common/actions';
 import {onClickCopy} from './clipboard';
 import {CookieConsent} from './cookie_consent';
 import {globals} from './globals';
-import {Sidebar} from './sidebar';
 import {Topbar} from './topbar';
 
 function renderPermalink(): m.Children {
@@ -52,7 +51,6 @@ export function createPage(component: m.Component<PageAttrs>):
   const pageComponent = {
     view({attrs}: m.Vnode<PageAttrs>) {
       const children = [
-        m(Sidebar),
         m(Topbar),
         m(Alerts),
         m(component, attrs),

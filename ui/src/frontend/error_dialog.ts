@@ -14,7 +14,6 @@
 
 import * as m from 'mithril';
 
-import {TraceUrlSource} from '../common/state';
 import {saveTrace} from '../common/upload_utils';
 
 import {globals} from './globals';
@@ -72,7 +71,6 @@ export function maybeShowErrorDialog(errLog: string) {
   }
 
   const errTitle = errLog.split('\n', 1)[0].substr(0, 80);
-  const userDescription = '';
   let checked = false;
   const engine = Object.values(globals.state.engines)[0];
 
@@ -84,16 +82,14 @@ export function maybeShowErrorDialog(errLog: string) {
           oninput: (ev: InputEvent) => {
             checked = (ev.target as HTMLInputElement).checked;
             if (checked && engine.source.type === 'FILE') {
-              saveTrace(engine.source.file).then(url => {
-                const errMessage = createErrorMessage(errLog, checked, url);
+              saveTrace(engine.source.file).then(() => {
                 renderModal(
-                    errTitle, errMessage, userDescription, shareTraceSection);
+                    errTitle, shareTraceSection);
                 return;
               });
             }
-            const errMessage = createErrorMessage(errLog, checked);
             renderModal(
-                errTitle, errMessage, userDescription, shareTraceSection);
+                errTitle, shareTraceSection);
           },
         }),
         m('span', `Check this box to share the current trace for debugging
@@ -105,45 +101,25 @@ export function maybeShowErrorDialog(errLog: string) {
   }
   renderModal(
       errTitle,
-      createErrorMessage(errLog, checked),
-      userDescription,
       shareTraceSection);
 }
 
 function renderModal(
-    errTitle: string,
     errMessage: string,
-    userDescription: string,
     shareTraceSection: m.Vnode[]) {
   showModal({
     title: 'Oops, something went wrong. Please file a bug.',
     content:
         m('div',
           m('.modal-logs', errMessage),
-          m('span', `Please provide any additional details describing
-           how the crash occurred:`),
-          m('textarea.modal-textarea', {
-            rows: 3,
-            maxlength: 1000,
-            oninput: (ev: InputEvent) => {
-              userDescription = (ev.target as HTMLTextAreaElement).value;
-            },
-            onkeydown: (e: Event) => {
-              e.stopPropagation();
-            },
-            onkeyup: (e: Event) => {
-              e.stopPropagation();
-            },
-          }),
           shareTraceSection),
     buttons: [
       {
-        text: 'File a bug (Googlers only)',
+        text: 'File a bug',
         primary: true,
         id: 'file_bug',
         action: () => {
-          window.open(
-              createLink(errTitle, errMessage, userDescription), '_blank');
+          window.open('https://github.com/pinpoint-apm/pinpoint/issues/new/choose', '_blank');
         }
       },
     ]
@@ -156,35 +132,6 @@ function urlExists() {
   return engine !== undefined &&
       (engine.source.type === 'ARRAY_BUFFER' || engine.source.type === 'URL') &&
       engine.source.url !== undefined;
-}
-
-function createErrorMessage(errLog: string, checked: boolean, url?: string) {
-  let errMessage = '';
-  const engine = Object.values(globals.state.engines)[0];
-  if (checked && url !== undefined) {
-    errMessage += `Trace: ${url}`;
-  } else if (urlExists()) {
-    errMessage += `Trace: ${(engine.source as TraceUrlSource).url}`;
-  } else {
-    errMessage += 'To assist with debugging please attach or link to the ' +
-        'trace you were viewing.';
-  }
-  return errMessage + '\n\n' +
-      'Viewed on: ' + self.location.origin + '\n\n' + errLog;
-}
-
-function createLink(
-    errTitle: string, errMessage: string, userDescription: string): string {
-  let link = 'https://goto.google.com/perfetto-ui-bug';
-  link += '?title=' + encodeURIComponent(`UI Error: ${errTitle}`);
-  link += '&description=';
-  if (userDescription !== '') {
-    link +=
-        encodeURIComponent('User description:\n' + userDescription + '\n\n');
-  }
-  link += encodeURIComponent(errMessage);
-  // 8kb is common limit on request size so restrict links to that long:
-  return link.substr(0, 8000);
 }
 
 function showOutOfMemoryDialog() {

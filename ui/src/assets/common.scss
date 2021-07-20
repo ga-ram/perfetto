@@ -15,7 +15,7 @@
     --sidebar-width: 256px;
     --topbar-height: 48px;
     --monospace-font: 'Roboto Mono', monospace;
-    --track-shell-width: 250px;
+    --track-shell-width: 0px;
     --track-border-color: #00000025;
     --anim-easing: cubic-bezier(0.4, 0.0, 0.2, 1)
 
@@ -74,44 +74,14 @@
     touch-action: none;
 }
 
-html {
+#timeline_main {
     font-family: Roboto, verdana, sans-serif;
-    height: 100%;
-    width: 100%;
-}
-
-html,
-body,
-body>main {
     height: 100%;
     width: 100%;
     padding: 0;
     margin: 0;
     user-select: none;
     overscroll-behavior: none;
-}
-
-// This is to minimize Mac vs Linux Chrome Headless rendering differences
-// when running UI intergrationtests via puppeteer.
-body.testing {
-  -webkit-font-smoothing: antialiased !important;
-  font-kerning: none !important;
-}
-
-h1,
-h2,
-h3 {
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    padding: 0;
-    margin: 0;
-}
-table {
-    user-select: text;
-}
-
-body>main {
     display: grid;
     grid-template-areas:
       "sidebar topbar"
@@ -123,23 +93,20 @@ body>main {
     overflow: hidden;
 }
 
-body.filedrag::after {
-  content: 'Drop the trace file to open it';
-  position: fixed;
-  z-index: 99;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border: 10px dashed #404854;
-  text-align: center;
-  font-size: 3rem;
-  line-height: 100vh;
-  color: #333;
-  background: rgba(255, 255, 255, 0.5);
+#timeline_main h1,
+#timeline_main h2,
+#timeline_main h3 {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    padding: 0;
+    margin: 0;
+}
+#timeline_main table {
+    user-select: text;
 }
 
-button {
+#timeline_main button {
   background: none;
   color: inherit;
   border: none;
@@ -149,7 +116,7 @@ button {
   outline: inherit;
 }
 
-button.close {
+#timeline_main button.close {
   font-family: var(--monospace-font);
 }
 
@@ -169,6 +136,7 @@ button.close {
 }
 
 .page {
+    height: 100%;
     grid-area: page;
     position: relative;
     display: flex;
@@ -177,10 +145,9 @@ button.close {
 }
 
 .split-panel {
-  flex: 1;
-  display: flex;
-  flex-flow: row;
-  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
   overflow: hidden;
 }
 
@@ -356,6 +323,8 @@ button.close {
 
 .scrolling-panel-container {
   position: relative;
+  height: 80%;
+  width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   flex: 1 1 auto;
@@ -398,7 +367,9 @@ button.close {
 // height equaling the total height of the content to prevent scrolling
 // height from growing.
 .scroll-limiter {
-  position: relative;
+  position: absolute;
+  height: 100%;
+  width: 100%;
   grid-area: space;
   overflow: hidden;
 }
@@ -416,6 +387,7 @@ canvas.main-canvas {
 }
 
 .pan-and-zoom-content {
+  height: 100%;
   flex: 1;
   position: relative;
   display: flex;
@@ -540,7 +512,7 @@ button.query-ctrl {
   grid-template-columns: auto 1fr;
   grid-template-rows: 1fr;
   transition: background-color .4s, color .4s;
-  height: 40px;
+  height: 0px;
   &::after {
     display: block;
     content: '';

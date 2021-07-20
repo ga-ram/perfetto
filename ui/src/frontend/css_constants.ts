@@ -15,7 +15,7 @@
 // This code can be used in unittests where we can't read CSS variables.
 // Also we cannot have global constructors beacause when the javascript is
 // loaded, the CSS might not be ready yet.
-export let TRACK_SHELL_WIDTH = 100;
+export let TRACK_SHELL_WIDTH = 0;
 export let SIDEBAR_WIDTH = 100;
 export let TRACK_BORDER_COLOR = '#ffc0cb';
 export let TOPBAR_HEIGHT = 48;

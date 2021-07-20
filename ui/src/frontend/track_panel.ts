@@ -22,7 +22,6 @@ import {TRACK_SHELL_WIDTH} from './css_constants';
 import {PerfettoMouseEvent} from './events';
 import {globals} from './globals';
 import {drawGridLines} from './gridline_helper';
-import {BLANK_CHECKBOX, CHECKBOX, STAR, STAR_BORDER} from './icons';
 import {Panel, PanelSize} from './panel';
 import {verticalScrollToTrack} from './scroll_helper';
 import {SliceRect, Track} from './track';
@@ -30,17 +29,6 @@ import {trackRegistry} from './track_registry';
 import {
   drawVerticalLineAtTime,
 } from './vertical_line_helper';
-
-function isPinned(id: string) {
-  return globals.state.pinnedTracks.indexOf(id) !== -1;
-}
-
-function isSelected(id: string) {
-  const selection = globals.state.currentSelection;
-  if (selection === null || selection.kind !== 'AREA') return false;
-  const selectedArea = globals.state.areas[selection.areaId];
-  return selectedArea.tracks.includes(id);
-}
 
 interface TrackShellAttrs {
   track: Track;
@@ -81,42 +69,7 @@ class TrackShell implements m.ClassComponent<TrackShellAttrs> {
           ondragover: this.ondragover.bind(this),
           ondragleave: this.ondragleave.bind(this),
           ondrop: this.ondrop.bind(this),
-        },
-        m(
-            'h1',
-            {
-              title: attrs.trackState.name,
-            },
-            attrs.trackState.name,
-            ('namespace' in attrs.trackState.config) &&
-                m('span.chip', 'metric'),
-            ),
-        m('.track-buttons',
-          attrs.track.getTrackShellButtons(),
-          m(TrackButton, {
-            action: () => {
-              globals.dispatch(
-                  Actions.toggleTrackPinned({trackId: attrs.trackState.id}));
-            },
-            i: isPinned(attrs.trackState.id) ? STAR : STAR_BORDER,
-            tooltip: isPinned(attrs.trackState.id) ? 'Unpin' : 'Pin to top',
-            showButton: isPinned(attrs.trackState.id),
-          }),
-          globals.state.currentSelection !== null &&
-                  globals.state.currentSelection.kind === 'AREA' ?
-              m(TrackButton, {
-                action: (e: PerfettoMouseEvent) => {
-                  globals.dispatch(Actions.toggleTrackSelection(
-                      {id: attrs.trackState.id, isTrackGroup: false}));
-                  e.stopPropagation();
-                },
-                i: isSelected(attrs.trackState.id) ? CHECKBOX : BLANK_CHECKBOX,
-                tooltip: isSelected(attrs.trackState.id) ?
-                    'Remove track' :
-                    'Add track to selection',
-                showButton: true,
-              }) :
-              ''));
+        });
   }
 
   onmousedown(e: MouseEvent) {

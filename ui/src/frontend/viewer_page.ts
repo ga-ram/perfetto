@@ -21,7 +21,6 @@ import {TRACK_SHELL_WIDTH} from './css_constants';
 import {DetailsPanel} from './details_panel';
 import {globals} from './globals';
 import {NotesPanel} from './notes_panel';
-import {OverviewTimelinePanel} from './overview_timeline_panel';
 import {createPage} from './pages';
 import {PanAndZoomHandler} from './pan_and_zoom_handler';
 import {AnyAttrsVnode, PanelContainer} from './panel_container';
@@ -33,7 +32,7 @@ import {DISMISSED_PANNING_HINT_KEY} from './topbar';
 import {TrackGroupPanel} from './track_group_panel';
 import {TrackPanel} from './track_panel';
 
-const SIDEBAR_WIDTH = 256;
+const SIDEBAR_WIDTH = 0;
 
 // Checks if the mousePos is within 3px of the start or end of the
 // current selected time range.
@@ -247,7 +246,6 @@ class TraceViewer implements m.ClassComponent {
             m('.pinned-panel-container', m(PanelContainer, {
                 doesScroll: false,
                 panels: [
-                  m(OverviewTimelinePanel, {key: 'overview'}),
                   m(TimeAxisPanel, {key: 'timeaxis'}),
                   m(TimeSelectionPanel, {key: 'timeselection'}),
                   m(NotesPanel, {key: 'notes'}),

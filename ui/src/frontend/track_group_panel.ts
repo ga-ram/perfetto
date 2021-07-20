@@ -16,22 +16,13 @@ import {hex} from 'color-convert';
 import * as m from 'mithril';
 
 import {assertExists} from '../base/logging';
-import {Actions} from '../common/actions';
 import {
-  getContainingTrackId,
   TrackGroupState,
   TrackState
 } from '../common/state';
 
 import {globals} from './globals';
 import {drawGridLines} from './gridline_helper';
-import {
-  BLANK_CHECKBOX,
-  CHECKBOX,
-  EXPAND_DOWN,
-  EXPAND_UP,
-  INDETERMINATE_CHECKBOX
-} from './icons';
 import {Panel, PanelSize} from './panel';
 import {Track} from './track';
 import {TrackContent} from './track_panel';
@@ -67,93 +58,23 @@ export class TrackGroupPanel extends Panel<Attrs> {
     return assertExists(globals.state.tracks[this.trackGroupState.tracks[0]]);
   }
 
-  view({attrs}: m.CVnode<Attrs>) {
-    const collapsed = this.trackGroupState.collapsed;
+  view() {
+    const collapsed = false;
     let name = this.trackGroupState.name;
     if (name[0] === '/') {
       name = StripPathFromExecutable(name);
     }
 
-    // The shell should be highlighted if the current search result is inside
-    // this track group.
-    let highlightClass = '';
-    const searchIndex = globals.state.searchIndex;
-    if (searchIndex !== -1) {
-      const trackId = globals.currentSearchResults.trackIds[searchIndex];
-      const parentTrackId = getContainingTrackId(globals.state, trackId);
-      if (parentTrackId === attrs.trackGroupId) {
-        highlightClass = 'flash';
-      }
-    }
-
-    const selection = globals.state.currentSelection;
-
-    const trackGroup = globals.state.trackGroups[attrs.trackGroupId];
-    let checkBox = BLANK_CHECKBOX;
-    if (selection !== null && selection.kind === 'AREA') {
-      const selectedArea = globals.state.areas[selection.areaId];
-      if (selectedArea.tracks.includes(attrs.trackGroupId) &&
-          trackGroup.tracks.every(id => selectedArea.tracks.includes(id))) {
-        checkBox = CHECKBOX;
-      } else if (
-          selectedArea.tracks.includes(attrs.trackGroupId) ||
-          trackGroup.tracks.some(id => selectedArea.tracks.includes(id))) {
-        checkBox = INDETERMINATE_CHECKBOX;
-      }
-    }
-
     return m(
         `.track-group-panel[collapsed=${collapsed}]`,
         {id: 'track_' + this.trackGroupId},
-        m(`.shell`,
-          {
-            onclick: (e: MouseEvent) => {
-              globals.dispatch(Actions.toggleTrackGroupCollapsed({
-                trackGroupId: attrs.trackGroupId,
-              })),
-                  e.stopPropagation();
-            },
-            class: `${highlightClass}`,
-          },
-
-          m('.fold-button',
-            m('i.material-icons',
-              this.trackGroupState.collapsed ? EXPAND_DOWN : EXPAND_UP)),
-          m('h1',
-            {
-              title: name,
-            },
-            name),
-          selection && selection.kind === 'AREA' ?
-              m('i.material-icons.track-button',
-                {
-                  onclick: (e: MouseEvent) => {
-                    globals.dispatch(Actions.toggleTrackSelection(
-                        {id: attrs.trackGroupId, isTrackGroup: true}));
-                    e.stopPropagation();
-                  }
-                },
-                checkBox) :
-              ''),
-
         this.summaryTrack ? m(TrackContent, {track: this.summaryTrack}) : null);
   }
 
-  oncreate(vnode: m.CVnodeDOM<Attrs>) {
-    this.onupdate(vnode);
+  oncreate() {
   }
 
-  onupdate({dom}: m.CVnodeDOM<Attrs>) {
-    const shell = assertExists(dom.querySelector('.shell'));
-    this.shellWidth = shell.getBoundingClientRect().width;
-    // TODO(andrewbb): move this to css_constants
-    if (this.trackGroupState.collapsed) {
-      this.backgroundColor =
-          getComputedStyle(dom).getPropertyValue('--collapsed-background');
-    } else {
-      this.backgroundColor =
-          getComputedStyle(dom).getPropertyValue('--expanded-background');
-    }
+  onupdate() {
   }
 
   highlightIfTrackSelected(ctx: CanvasRenderingContext2D, size: PanelSize) {
@@ -174,7 +95,7 @@ export class TrackGroupPanel extends Panel<Attrs> {
   }
 
   renderCanvas(ctx: CanvasRenderingContext2D, size: PanelSize) {
-    const collapsed = this.trackGroupState.collapsed;
+    const collapsed = false;
 
     ctx.fillStyle = this.backgroundColor;
     ctx.fillRect(0, 0, size.width, size.height);

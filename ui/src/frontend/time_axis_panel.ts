@@ -16,7 +16,7 @@ import * as m from 'mithril';
 
 import {timeToString} from '../common/time';
 
-import {TRACK_SHELL_WIDTH} from './css_constants';
+import {TRACK_SHELL_WIDTH, SECONDARY_LIGHTER_TEXT_COLOR} from './css_constants';
 import {globals} from './globals';
 import {gridlines} from './gridline_helper';
 import {Panel, PanelSize} from './panel';
@@ -29,7 +29,7 @@ export class TimeAxisPanel extends Panel {
   renderCanvas(ctx: CanvasRenderingContext2D, size: PanelSize) {
     const timeScale = globals.frontendLocalState.timeScale;
     const range = globals.frontendLocalState.visibleWindowTime;
-    ctx.fillStyle = '#999';
+    ctx.fillStyle = SECONDARY_LIGHTER_TEXT_COLOR;
 
     // Draw time axis.
     ctx.font = '10px Roboto Condensed';

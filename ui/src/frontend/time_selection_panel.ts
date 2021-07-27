@@ -17,7 +17,7 @@ import * as m from 'mithril';
 import {timeToString} from '../common/time';
 import {TimeSpan} from '../common/time';
 
-import {TRACK_SHELL_WIDTH} from './css_constants';
+import {TRACK_SHELL_WIDTH, SECONDARY_LIGHTER_TEXT_COLOR, DEFAULT_BACKGROUND_COLOR} from './css_constants';
 import {globals} from './globals';
 import {gridlines} from './gridline_helper';
 import {Panel, PanelSize} from './panel';
@@ -37,7 +37,7 @@ export interface BBox {
 // the positioning of the label to ensure it is on screen.
 function drawHBar(
     ctx: CanvasRenderingContext2D, target: BBox, bounds: BBox, label: string) {
-  ctx.fillStyle = '#222';
+  ctx.fillStyle = SECONDARY_LIGHTER_TEXT_COLOR;
 
   const xLeft = Math.floor(target.x);
   const xRight = Math.ceil(target.x + target.width);
@@ -76,11 +76,11 @@ function drawHBar(
     }
   }
 
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = DEFAULT_BACKGROUND_COLOR;
   ctx.fillRect(labelXLeft - 1, 0, labelWidth + 1, target.height);
 
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#222';
+  ctx.fillStyle = SECONDARY_LIGHTER_TEXT_COLOR;
   ctx.font = '10px Roboto Condensed';
   ctx.fillText(label, labelXLeft, yMid);
 }
@@ -89,7 +89,7 @@ function drawIBar(
     ctx: CanvasRenderingContext2D, xPos: number, bounds: BBox, label: string) {
   if (xPos < bounds.x) return;
 
-  ctx.fillStyle = '#222';
+  ctx.fillStyle = SECONDARY_LIGHTER_TEXT_COLOR;
   ctx.fillRect(xPos, 0, 1, bounds.width);
 
   const yMid = Math.floor(bounds.height / 2 + bounds.y);
@@ -105,11 +105,11 @@ function drawIBar(
     ctx.textAlign = 'left';
   }
 
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = DEFAULT_BACKGROUND_COLOR;
   ctx.fillRect(xPosLabel - 1, 0, labelWidth + 2, bounds.height);
 
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#222';
+  ctx.fillStyle = SECONDARY_LIGHTER_TEXT_COLOR;
   ctx.font = '10px Roboto Condensed';
   ctx.fillText(label, xPosLabel, yMid);
 }

@@ -16,9 +16,7 @@
     --topbar-height: 48px;
     --monospace-font: 'Roboto Mono', monospace;
     --track-shell-width: 0px;
-    --track-border-color: #00000025;
     --anim-easing: cubic-bezier(0.4, 0.0, 0.2, 1)
-
 }
 
 @mixin transition($time:0.1s) {
@@ -136,6 +134,8 @@
 }
 
 .page {
+    background-color: var(--background-default);
+    color: var(--text-primary-lighter);
     height: 100%;
     grid-area: page;
     position: relative;
@@ -249,7 +249,7 @@
       display: block;
       content: '';
       grid-column: 1 / span 2;
-      border-top: 1px solid var(--track-border-color);
+      border-top: 1px solid var(--border-primary-darkest);
       margin-top: -1px;
       z-index: 2;
     }
@@ -263,15 +263,14 @@
         grid-template-columns: 1fr auto;
         align-items: center;
         width: var(--track-shell-width);
-        background: #fff;
-        border-right: 1px solid #c7d0db;
+        background: var(--background-default);
 
         &.drag {
           background-color: #eee;
           box-shadow: 0 4px 12px -4px #999 inset;
         }
         &.drop-before {
-          box-shadow: 0 4px 2px -1px hsl(213, 40%, 50%) inset;
+          box-shadow: 0 4px 2px -1px hsl(214, 19%, 26%) inset;
         }
         &.drop-after {
           box-shadow: 0 -4px 2px -1px hsl(213, 40%, 50%) inset;
@@ -375,6 +374,7 @@
 }
 
 canvas.main-canvas {
+  background-color: inherit;
   z-index: -1;
 }
 
@@ -399,6 +399,7 @@ canvas.main-canvas {
 }
 
 .time-axis-panel {
+  color: var(--text-secondary-lighter);
   height: 12px;
 }
 
@@ -517,7 +518,7 @@ button.query-ctrl {
     display: block;
     content: '';
     grid-column: 1 / span 2;
-    border-top: 1px solid var(--track-border-color);
+    border-top: 1px solid var(--border-primary-darkest);
     margin-top: -1px;
   }
   &[collapsed=true] {

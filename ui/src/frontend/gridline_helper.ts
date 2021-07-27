@@ -14,7 +14,8 @@
 
 import {TimeSpan} from '../common/time';
 
-import {TRACK_BORDER_COLOR, TRACK_SHELL_WIDTH} from './css_constants';
+//import {TRACK_BORDER_COLOR, TRACK_SHELL_WIDTH} from './css_constants';
+import {TRACK_SHELL_WIDTH, SECONDARY_LIGHTER_TEXT_COLOR} from './css_constants';
 import {TimeScale} from './time_scale';
 
 export const DESIRED_PX_PER_STEP = 80;
@@ -97,7 +98,7 @@ export function drawGridLines(
     timeSpan: TimeSpan,
     width: number,
     height: number): void {
-  ctx.strokeStyle = TRACK_BORDER_COLOR;
+  ctx.strokeStyle = SECONDARY_LIGHTER_TEXT_COLOR;
   ctx.lineWidth = 1;
 
   for (const xAndTime of gridlines(width, timeSpan, x)) {

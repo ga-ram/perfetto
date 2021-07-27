@@ -17,9 +17,9 @@
   grid-template-rows: auto 1fr;
 
   .handle {
-    background-color: hsl(215, 1%, 95%);
+    background-color: var(--background-primary-darker);
     border: 1px solid rgba(0,0,0,0.1);
-    border-bottom: none;
+    border-bottom: solid 1px hsla(0, 0%, 75%, 1);
     cursor: row-resize;
     height: 28px;
     min-height: 28px;
@@ -34,11 +34,11 @@
 
       .tab {
         font-family: 'Roboto Condensed', sans-serif;
-        color: #3c4b5d;
         padding: 3px 10px 0px 10px;
         margin-top: 3px;
         font-size: 13px;
         border-radius: 5px 5px 0px 0px;
+        color: var(--text-secondary);
         background-color: hsla(0, 0%, 75%, 1);
         border-top: solid 1px hsla(0, 0%, 75%, 1);
         border-left: solid 1px hsla(0, 0%, 75%, 1);
@@ -48,10 +48,11 @@
         text-overflow: ellipsis;
 
         &[active] {
-          background-color: white;
+          color: var(--text-default);
+          background-color: var(--background-primary-lighter);
           &:hover {
             cursor: default;
-            background-color: white;
+            background-color: var(--background-primary-lighter);
           }
         }
 
@@ -97,7 +98,7 @@
 .details-panel {
   font-family: 'Roboto Condensed', sans-serif;
   font-weight: 300;
-  color: #3c4b5d;
+  color: var(--text-default);
   user-select: text;
 
   .material-icons {
@@ -122,7 +123,7 @@
     position: sticky;
     top: 0px;
     display: flex;
-    background: white;
+    background: var(--background-primary-darker);
     &.aggregation {
       padding-top: 5px;
       display: grid;
@@ -242,7 +243,7 @@
     word-wrap: break-word;
     padding: 0px 10px;
     tr:hover {
-      background-color: hsl(214, 22%, 90%);
+      background-color: var(--background-primary-darker);
     }
     th {
       text-align: left;

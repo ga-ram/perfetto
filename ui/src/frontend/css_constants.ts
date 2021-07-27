@@ -19,12 +19,18 @@ export let TRACK_SHELL_WIDTH = 0;
 export let SIDEBAR_WIDTH = 100;
 export let TRACK_BORDER_COLOR = '#ffc0cb';
 export let TOPBAR_HEIGHT = 48;
+export let DEFAULT_TEXT_COLOR = '#666';
+export let SECONDARY_LIGHTER_TEXT_COLOR = '#acacac';
+export let DEFAULT_BACKGROUND_COLOR = '#ffffff';
 
 export function initCssConstants() {
   TRACK_SHELL_WIDTH = getCssNum('--track-shell-width') || TRACK_SHELL_WIDTH;
   SIDEBAR_WIDTH = getCssNum('--sidebar-width') || SIDEBAR_WIDTH;
   TRACK_BORDER_COLOR = getCssStr('--track-border-color') || TRACK_BORDER_COLOR;
   TOPBAR_HEIGHT = getCssNum('--topbar-height') || TOPBAR_HEIGHT;
+  DEFAULT_TEXT_COLOR = getCssStr('--text-default') || DEFAULT_TEXT_COLOR;
+  SECONDARY_LIGHTER_TEXT_COLOR = getCssStr('--text-secondary-lighter') || SECONDARY_LIGHTER_TEXT_COLOR;
+  DEFAULT_BACKGROUND_COLOR = getCssStr('--background-default') || DEFAULT_BACKGROUND_COLOR;
 }
 
 function getCssStr(prop: string): string|undefined {

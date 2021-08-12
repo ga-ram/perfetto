@@ -1,0 +1,35 @@
+{
+  "name": "@pinpoint-apm/perfetto-ui",
+  "version": "1.0.2",
+  "description": "fork from google perfetto",
+  "main": "frontend_bundle.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pinpoint-apm/perfetto.git"
+  },
+  "homepage": "https://github.com/pinpoint-apm/perfetto.git#readme",
+  "hompage": "https://github.com/pinpoint-apm/perfetto.git",
+  "keywords": [],
+  "license": "Apache-2.0",
+  "files": [
+    "frontend_bundle.js",
+    "frontend_bundle.js",
+    "perfetto.css",
+    "trace_processor.wasm",
+    "trace_to_text.wasm",
+    "traceconv_bundle.js",
+    "assets/brand.png",
+    "assets/catapult_trace_viewer.html",
+    "assets/catapult_trace_viewer.js",
+    "assets/MaterialIcons.woff2",
+    "assets/Raleway-Regular.woff2",
+    "assets/Raleway-Thin.woff2",
+    "assets/RobotoCondensed-Light.woff2",
+    "assets/RobotoCondensed-Regular.woff2",
+    "assets/RobotoMono-Regular.woff2"
+  ],
+  
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

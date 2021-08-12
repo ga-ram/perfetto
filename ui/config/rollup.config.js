@@ -16,6 +16,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import replace from 'rollup-plugin-re';
 import sourcemaps from 'rollup-plugin-sourcemaps';
+import copy from 'rollup-plugin-copy'
 
 const path = require('path');
 const ROOT_DIR = path.dirname(path.dirname(__dirname));  // The repo root.
@@ -86,8 +87,17 @@ function defServiceWorkerBundle() {
       }),
       commonjs(),
       sourcemaps(),
+      copyDeployFileToDistVersionPlugin('package.json')
     ],
   };
+}
+
+function copyDeployFileToDistVersionPlugin(filename) {
+  return copy({
+    targets: [
+      { src: `${ROOT_DIR}/ui/config/deploy/${filename}`, dest: `${OUT_SYMLINK}/dist_version` },
+    ]
+  })
 }
 
 export default [

@@ -115,6 +115,14 @@ function setExtensionAvailability(available: boolean) {
 }
 
 function main() {
+  const dataSource = document.getElementById('timeline_data_source');
+  const mainDiv = document.getElementById('timeline_main');
+
+  if (!dataSource || !mainDiv) {
+    console.log('Necessary components \'timeline_data_source \' and \'timeline_main\' are not found.');
+    return;
+  }
+
   // Load the css. The load is asynchronous and the CSS is not ready by the time
   // appenChild returns.
   const cssLoadPromise = defer<void>();

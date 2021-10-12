@@ -1,6 +1,6 @@
 {
   "name": "@pinpoint-apm/perfetto-ui",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "fork from google perfetto",
   "main": "frontend_bundle.js",
   "repository": {
@@ -13,7 +13,7 @@
   "license": "Apache-2.0",
   "files": [
     "frontend_bundle.js",
-    "frontend_bundle.js",
+    "engine_bundle.js",
     "perfetto.css",
     "trace_processor.wasm",
     "trace_to_text.wasm",

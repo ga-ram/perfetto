@@ -17,7 +17,6 @@ import * as m from 'mithril';
 import {Actions} from '../common/actions';
 
 import {onClickCopy} from './clipboard';
-import {CookieConsent} from './cookie_consent';
 import {globals} from './globals';
 import {Topbar} from './topbar';
 
@@ -53,8 +52,7 @@ export function createPage(component: m.Component<PageAttrs>):
       const children = [
         m(Topbar),
         m(Alerts),
-        m(component, attrs),
-        m(CookieConsent),
+        m(component, attrs)
       ];
       if (globals.state.perfDebug) {
         children.push(m('.perf-stats'));
